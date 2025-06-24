@@ -1,4 +1,9 @@
-import { MiddlewareConsumer, Module, NestModule, Req, RequestMethod } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { ProductsController } from './products.controller';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -21,53 +26,62 @@ import { MailerService } from 'src/middleware/mailer';
 @Module({
   controllers: [ProductsController],
 
-  providers: [ProductsService, ProductRepository,MailerService, UserRepository, OrdersRepository, SubscriberRepository, {
-    provide: APP_GUARD,
-    useClass: RolesGuard
-  }],
+  providers: [
+    ProductsService,
+    ProductRepository,
+    MailerService,
+    UserRepository,
+    OrdersRepository,
+    SubscriberRepository,
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
+    },
+  ],
 
   imports: [
     MongooseModule.forFeature([
       {
         name: Products.name,
-        schema: ProductSchema
+        schema: ProductSchema,
       },
       {
         name: Users.name,
-        schema: UserSchema
+        schema: UserSchema,
       },
       {
         name: License.name,
-        schema: LicenseSchema
+        schema: LicenseSchema,
       },
       {
         name: Orders.name,
-        schema: OrderSchema
+        schema: OrderSchema,
       },
       {
         name: Subscriber.name,
-        schema: SubscriberSchema
+        schema: SubscriberSchema,
       },
     ]),
-    StripeModule.forRoot(StripeModule, {
-      apiKey: config.get('stripe.secret_key')
+    StripeModule.forRoot({
+      apiKey: config.get('stripe.secret_key'),
     }),
-  ]
+  ],
 })
 export class ProductsModule implements NestModule {
   // to apply auth middleware
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(AuthMiddleware)
-      .exclude( // for these 2 routes we are not gonna use the auth validation
+      .exclude(
+        // for these 2 routes we are not gonna use the auth validation
         {
           path: `/products`,
-          method: RequestMethod.GET
+          method: RequestMethod.GET,
         },
         {
           path: `/products/:id`,
-          method: RequestMethod.GET
-        }
+          method: RequestMethod.GET,
+        },
       )
       .forRoutes(ProductsController);
   }

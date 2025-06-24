@@ -39,7 +39,7 @@ export enum categoryType {
   Headphones = 'Headphones',
   Monitor = 'Monitor',
   Laptop = 'Laptop',
-  Headset='Headset'
+  Headset = 'Headset',
 }
 
 export enum platformType {
@@ -60,7 +60,7 @@ export enum platformType {
   VRPlatform = 'VR Platform',
   ARPlatform = 'AR Platform',
   Universal = 'Universal',
-  None='None'
+  None = 'None',
 }
 
 export enum baseType {
@@ -85,9 +85,8 @@ export enum baseType {
   IoTDevice = 'IoT Device',
   CloudService = 'Cloud Service',
   Furniture = 'Furniture',
-  None='None'
+  None = 'None',
 }
-
 
 @Schema({ timestamps: true })
 export class Feedbackers extends mongoose.Document {
@@ -127,11 +126,10 @@ export class SkuDetails extends mongoose.Document {
   skuCode?: string;
 
   @Prop({ default: 0, required: true })
-  remainingStock: number
+  remainingStock: number;
 }
 
 export const skuDetailsSchema = SchemaFactory.createForClass(SkuDetails);
-
 
 @Schema({ timestamps: true })
 export class Products {
@@ -190,7 +188,7 @@ export class Products {
   stripeProductId: string;
 
   @Prop({ default: false, required: true })
-  hasLicenses: boolean
+  hasLicenses: boolean;
 }
 
 export const ProductSchema = SchemaFactory.createForClass(Products);

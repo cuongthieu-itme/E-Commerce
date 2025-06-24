@@ -26,7 +26,7 @@ export class License {
     type: String,
   })
   licenseKey: string;
-  
+
   @Prop({
     default: false,
     type: Boolean,
@@ -40,4 +40,3 @@ export class License {
 }
 
 export const LicenseSchema = SchemaFactory.createForClass(License);
- 

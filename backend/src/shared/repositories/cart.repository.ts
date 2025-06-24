@@ -7,14 +7,18 @@ import { Cart, CartDocument } from '../schema/cart';
 export class CartRepository {
   constructor(
     @InjectModel(Cart.name) private readonly cartModel: Model<CartDocument>,
-  ) { }
+  ) {}
 
   // Function to create or update a cart item
   async createCartItem(cartData: Partial<Cart>): Promise<Cart> {
     const { userId, productId, skuId } = cartData;
 
     // Check if a cart item already exists for the user, product, and SKU
-    const existingCartItem = await this.cartModel.findOne({ userId, productId, skuId });
+    const existingCartItem = await this.cartModel.findOne({
+      userId,
+      productId,
+      skuId,
+    });
 
     if (existingCartItem) {
       // If the cart item exists, increase the quantity
@@ -38,32 +42,49 @@ export class CartRepository {
   }
 
   // Function to update a cart item by ID
-  async updateCartItem(cartId: string, updateData: Partial<Cart>): Promise<Cart | null> {
+  async updateCartItem(
+    cartId: string,
+    updateData: Partial<Cart>,
+  ): Promise<Cart | null> {
     return this.cartModel
       .findByIdAndUpdate(cartId, updateData, { new: true })
       .exec();
   }
 
   // NEW: Function to clear all cart items for a specific user
-  async clearCartSelectedItemsByUser(userId: string, cartIds: string[]): Promise<{ deletedCount: number }> {
-    
-    const count = await this.cartModel.deleteMany({
-      userId,
-      _id: { $in: cartIds },
-    }).exec();
+  async clearCartSelectedItemsByUser(
+    userId: string,
+    cartIds: string[],
+  ): Promise<{ deletedCount: number }> {
+    const count = await this.cartModel
+      .deleteMany({
+        userId,
+        _id: { $in: cartIds },
+      })
+      .exec();
 
     return count;
   }
 
   // NEW: Function to increment the quantity of a cart item
-  async incrementCartItemQuantity(cartId: string, incrementBy: number): Promise<Cart | null> {
+  async incrementCartItemQuantity(
+    cartId: string,
+    incrementBy: number,
+  ): Promise<Cart | null> {
     return this.cartModel
-      .findByIdAndUpdate(cartId, { $inc: { quantity: incrementBy } }, { new: true })
+      .findByIdAndUpdate(
+        cartId,
+        { $inc: { quantity: incrementBy } },
+        { new: true },
+      )
       .exec();
   }
 
   // Function to find a cart item by user and SKU
-  async findCartItemByUserAndSku(userId: string, skuId: string): Promise<Cart | null> {
+  async findCartItemByUserAndSku(
+    userId: string,
+    skuId: string,
+  ): Promise<Cart | null> {
     return this.cartModel.findOne({ userId, skuId }).exec();
   }
 }
